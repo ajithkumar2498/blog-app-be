@@ -172,7 +172,12 @@ export const getPostById = async (req, res)=>{
   }
 }
 
-export const uploadAuth = async (req, res) => {
-  var result = await imagekit.getAuthenticationParameters();
-  res.send(result);
+export const uploadAuth = (req, res) => {
+  try {
+    const authenticationParameters = imagekit.getAuthenticationParameters();
+    res.status(200).json(authenticationParameters);
+  } catch (error) {
+    console.error("ImageKit auth error:", error);
+    res.status(500).json({ message: "Failed to generate upload auth" });
+  }
 };
