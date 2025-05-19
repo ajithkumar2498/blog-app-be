@@ -4,12 +4,6 @@ import ImageKit from "imagekit";
 import dotenv from "dotenv";
 dotenv.config();
 
-const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
-});
-
 export const getAllBlogs = async (req, res) => {
   try {
     const posts = await postModel.find().populate("user", "name email");
@@ -174,8 +168,14 @@ export const getPostById = async (req, res)=>{
 
 export const uploadAuth = (req, res) => {
   try {
-    const authenticationParameters = imagekit.getAuthenticationParameters();
-    res.status(200).json(authenticationParameters);
+  const imagekit = new ImageKit({
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+  });
+
+  const authParams = imagekit.getAuthenticationParameters();
+  res.json(authParams);
   } catch (error) {
     console.error("ImageKit auth error:", error);
     res.status(500).json({ message: "Failed to generate upload auth" });
